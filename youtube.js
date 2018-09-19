@@ -8,14 +8,32 @@ function run_script(stuff) {
 	tmp.innerHTML = stuff;
 	wD.documentElement.appendChild(tmp);
 	wD.documentElement.removeChild(tmp);
-	alert(stuff);
+}
+
+function onCheckState(item) {
+	// on the original video: do nothing
+	if (item.ytState && item.ytState.url == window.location.href) {
+		return;
+	}
+	// missing or stale state: store it
+	if (!item.ytState || !item.ytState.url || !item.ytState.when || item.ytState.when + 15000 < Date.now()) {
+		browser.storage.local.set({
+			ytState: {url: window.location.href, when: Date.now()}
+		});
+		return;
+	}
+
+	// otherwise we must be on a new video: go back to the original.
+	window.location.href = item.ytState.url;
+}
+
+function onError(error) {
+	alert("Error: " + error);
 }
 
 function yt_cleanup() {
-	if (!window.originalYtUrl) {
-		run_script("window.originalYtUrl = localStorage.getItem('originalYtUrl')");
-		alert(window.originalYtUrl);
-	}
+	let gettingState = browser.storage.local.get();
+	gettingState.then(onCheckState, onError);
 
 	if (document.getElementById('secondary')) {
 		// "This Nazi shit just won't do." -- The Vandals
@@ -29,16 +47,6 @@ function yt_cleanup() {
 	if (!document.getElementById('player-theater-container').firstChild) {	
 		run_script("document.querySelector('button.ytp-size-button').click()");
 	}
-
-	if (!window.originalYtUrl) {
-		window.originalYtUrl = window.location.href;
-		run_script("localStorage.setItem('originalYtUrl', '" + window.location.href + "')");
-	}
-	
-	if (!(window.originalYtUrl == window.location.href)) {
-		// go back to the original video
-		window.location.href = window.originalYtUrl;
-	} 
 }
 
 setInterval(yt_cleanup, 2000);
