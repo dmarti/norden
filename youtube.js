@@ -1,19 +1,20 @@
-function run_script(code) {
+function run_script(stuff) {
 	// Add and remove a script on the page
 	var wD = document.wrappedJSObject;
+	if (!wD) {
+		wD = document;
+	}
 	var tmp = wD.createElement('script');
-	tmp.innerHTML = code;
+	tmp.innerHTML = stuff;
 	wD.documentElement.appendChild(tmp);
 	wD.documentElement.removeChild(tmp);
+	alert(stuff);
 }
 
-function sanitize() {
-	if (!window.ytUrl) {
-		window.ytUrl = window.location.href;
-	}
-	
-	if (window.ytUrl != window.location.href) {
-		window.location.href = window.ytUrl;
+function yt_cleanup() {
+	if (!window.originalYtUrl) {
+		run_script("window.originalYtUrl = localStorage.getItem('originalYtUrl')");
+		alert(window.originalYtUrl);
 	}
 
 	if (document.getElementById('secondary')) {
@@ -23,10 +24,21 @@ function sanitize() {
 
 	if (document.getElementById('related')) {
 		run_script("document.getElementById('related').parentElement.removeChild(document.getElementById('related'))");
+	}
 
 	if (!document.getElementById('player-theater-container').firstChild) {	
 		run_script("document.querySelector('button.ytp-size-button').click()");
 	}
+
+	if (!window.originalYtUrl) {
+		window.originalYtUrl = window.location.href;
+		run_script("localStorage.setItem('originalYtUrl', '" + window.location.href + "')");
+	}
+	
+	if (!(window.originalYtUrl == window.location.href)) {
+		// go back to the original video
+		window.location.href = window.originalYtUrl;
+	} 
 }
 
-setInterval(sanitize, 2000);
+setInterval(yt_cleanup, 2000);
