@@ -1,0 +1,13 @@
+{
+    "manifest_version": 2,
+    "name": "norden",
+    "version": "0.1",
+    "description": "remove domestic terrorist crap from YouTube",
+    "content_scripts": [
+        {
+            "matches": ["*://www.youtube.com/*"],
+            "js": ["youtube.js"],
+            "run_at": "document_idle"
+        }
+    ]
+}
