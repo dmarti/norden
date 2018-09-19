@@ -1,3 +1,12 @@
+function run_script(code) {
+	// Add and remove a script on the page
+	var wD = document.wrappedJSObject;
+	var tmp = wD.createElement('script');
+	tmp.innerHTML = code;
+	wD.documentElement.appendChild(tmp);
+	wD.documentElement.removeChild(tmp);
+}
+
 function sanitize() {
 	if (!window.ytUrl) {
 		window.ytUrl = window.location.href;
@@ -7,27 +16,17 @@ function sanitize() {
 		window.location.href = window.ytUrl;
 	}
 
-	if (!document.getElementById('secondary') &&
-	    !document.getElementById('related') &&
-	     document.getElementById('player-theater-container').firstChild) {	
-	    	return;
+	if (document.getElementById('secondary')) {
+		// "This Nazi shit just won't do." -- The Vandals
+		run_script("document.getElementById('secondary').parentElement.removeChild(document.getElementById('secondary'))");
 	}
 
-	var wD = document.wrappedJSObject;
-	var zap = wD.createElement('script');
-	zap.innerHTML = "document.getElementById('secondary').parentElement.removeChild(document.getElementById('secondary'))";
-	wD.documentElement.appendChild(zap);
-	wD.documentElement.removeChild(zap);
+	if (document.getElementById('related')) {
+		run_script("document.getElementById('related').parentElement.removeChild(document.getElementById('related'))");
 
-	var zap = wD.createElement('script');
-	zap.innerHTML = "document.getElementById('related').parentElement.removeChild(document.getElementById('related'))";
-	wD.documentElement.appendChild(zap);
-	wD.documentElement.removeChild(zap);
-
-	var big = wD.createElement('script');
-	big.innerHTML = "document.querySelector('button.ytp-size-button').click()";
-	wD.documentElement.appendChild(big);
-	wD.documentElement.removeChild(big);
+	if (!document.getElementById('player-theater-container').firstChild) {	
+		run_script("document.querySelector('button.ytp-size-button').click()");
+	}
 }
 
 setInterval(sanitize, 2000);
