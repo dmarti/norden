@@ -3,6 +3,7 @@
     "name": "norden",
     "version": "0.2",
     "description": "remove domestic terrorist crap from YouTube",
+    "permissions": ["storage"],
     "content_scripts": [
         {
             "matches": ["*://www.youtube.com/*"],
