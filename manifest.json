@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "norden",
+    "name": "norden-yt",
     "version": "0.2",
-    "description": "remove domestic terrorist crap from YouTube",
+    "description": "remove recommendations and prevent auto-play of next video on YouTube",
     "permissions": ["storage"],
     "content_scripts": [
         {
