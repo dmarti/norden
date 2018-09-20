@@ -1,9 +1,14 @@
 {
     "manifest_version": 2,
     "name": "norden-yt",
-    "version": "0.2",
+    "version": "0.3",
     "description": "remove recommendations and prevent auto-play of next video on YouTube",
     "permissions": ["storage"],
+    "applications": {
+	"gecko": {
+		"id": "{9a94e980-d488-4e79-8131-c2e908731fa8}"
+	}
+    },
     "content_scripts": [
         {
             "matches": ["*://www.youtube.com/*"],

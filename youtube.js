@@ -1,5 +1,4 @@
 function run_script(stuff) {
-	// Add and remove a script on the page
 	var wD = document.wrappedJSObject;
 	if (!wD) {
 		wD = document;
@@ -11,7 +10,6 @@ function run_script(stuff) {
 }
 
 function onCheckState(item) {
-	// missing or stale state: store it as current video
 	if (!item.ytState || !item.ytState.url || !item.ytState.when || item.ytState.when + 5000 < Date.now()) {
 		browser.storage.local.set({
 			ytState: {url: window.location.href, when: Date.now()}
@@ -19,7 +17,6 @@ function onCheckState(item) {
 		return;
 	}
 
-	// if on a different video, go back to the original
 	if (item.ytState.url != window.location.href && item.ytState.when + 15000 > Date.now()) {
 		window.location.href = item.ytState.url;
 	}
@@ -30,12 +27,10 @@ function onError(error) {
 }
 
 function yt_cleanup() {
-	// check if already automatically directed to another video somehow.
 	let gettingState = browser.storage.local.get();
 	gettingState.then(onCheckState, onError);
 
 	if (document.getElementById('secondary')) {
-		// "This Nazi shit just won't do." -- The Vandals
 		run_script("document.getElementById('secondary').parentElement.removeChild(document.getElementById('secondary'))");
 	}
 
@@ -43,7 +38,6 @@ function yt_cleanup() {
 		run_script("document.getElementById('related').parentElement.removeChild(document.getElementById('related'))");
 	}
 
-	// removing crap messes up the layout, so switch to theater mode to make it less obvious.
 	if (!document.getElementById('player-theater-container').firstChild) {	
 		run_script("document.querySelector('button.ytp-size-button').click()");
 	}
