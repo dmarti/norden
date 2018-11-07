@@ -10,14 +10,16 @@ function run_script(stuff) {
 }
 
 function onCheckState(item) {
-	if (!item.ytState || !item.ytState.url || !item.ytState.when || item.ytState.when + 5000 < Date.now()) {
+	// No remembered YouTube page -- remember the current page and date
+	if (!item.ytState || !item.ytState.url || !item.ytState.when || item.ytState.when + 10000 < Date.now()) {
 		browser.storage.local.set({
 			ytState: {url: window.location.href, when: Date.now()}
 		});
 		return;
 	}
 
-	if (item.ytState.url != window.location.href && item.ytState.when + 15000 > Date.now()) {
+	// we somehow ended up on a different YouTube page (autoplay?) Back to the remembered page.
+	if (item.ytState.url != window.location.href && item.ytState.when + 30000 > Date.now()) {
 		window.location.href = item.ytState.url;
 	}
 }
@@ -30,6 +32,11 @@ function yt_cleanup() {
 	let gettingState = browser.storage.local.get();
 	gettingState.then(onCheckState, onError);
 
+	//wall of suggested next videos
+	if (document.getElementsByClassName('ytp-videowall-still-info-content').length) {
+		window.location.href = window.location.href
+	}
+
 	if (document.getElementById('secondary')) {
 		run_script("document.getElementById('secondary').parentElement.removeChild(document.getElementById('secondary'))");
 	}
@@ -38,9 +45,12 @@ function yt_cleanup() {
 		run_script("document.getElementById('related').parentElement.removeChild(document.getElementById('related'))");
 	}
 
+	// theater mode fills in the space left blank after removing the "related" videos
 	if (!document.getElementById('player-theater-container').firstChild) {	
 		run_script("document.querySelector('button.ytp-size-button').click()");
 	}
 }
 
-setInterval(yt_cleanup, 2000);
+if (document.location.href.indexOf('watch') > 0) {
+	setInterval(yt_cleanup, 2000);
+}
