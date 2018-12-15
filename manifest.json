@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "norden-yt",
-    "version": "0.3",
+    "version": "0.4",
     "description": "remove recommendations and prevent auto-play of next video on YouTube",
     "permissions": ["storage"],
     "applications": {
