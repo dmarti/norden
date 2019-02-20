@@ -3,7 +3,11 @@
     "name": "norden-yt",
     "version": "0.4",
     "description": "remove recommendations and prevent auto-play of next video on YouTube",
-    "permissions": ["storage"],
+    "permissions": ["storage",
+    		"webRequest",
+    		"webRequestBlocking",
+		"https://www.youtube.com/"
+  	],
     "applications": {
 	"gecko": {
 		"id": "{9a94e980-d488-4e79-8131-c2e908731fa8}"
@@ -15,5 +19,8 @@
             "js": ["youtube.js"],
             "run_at": "document_idle"
         }
-    ]
+    ],
+    "background": {
+        "scripts": ["background.js"]
+    }
 }
