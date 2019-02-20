@@ -3,9 +3,13 @@ var happy = true;
 
 function hasCompromisedOrigin(req) {
 	var u = req.originUrl;
+	if (!u) {
+		return false;
+	}
 	if (u.indexOf('https://www.youtube.com/') == 0) {
 		return true;
 	}
+	return false;
 }
 
 function isWatchPage(req) {
@@ -13,9 +17,18 @@ function isWatchPage(req) {
 }
 
 function checkURL(requestDetails) {
-	if (isWatchPage(requestDetails) && !hasCompromisedOrigin(requestDetails)) {
-		console.log("New, apparently clean, watch page");
-		happy = true;
+	if (docid && isWatchPage(requestDetails)) {
+		if(hasCompromisedOrigin(requestDetails)) {
+			var properUrl = 'https://www.youtube.com/watch?v=' + docid;
+			if (requestDetails.url == properUrl) {
+				return;
+			} else {
+				return({'redirectUrl': 'https://www.youtube.com/watch?v=' + docid})
+			}
+		} else {
+			console.log("New, apparently clean, watch page");
+			happy = true;
+		}
 	}
 	if (!happy) {
 		console.log("Canceling request for wrong docid.");

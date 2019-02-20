@@ -9,42 +9,7 @@ function run_script(stuff) {
 	wD.documentElement.removeChild(tmp);
 }
 
-function rememberState(reason) {
-//	alert(reason + ", new state: " + window.location.href);
-	browser.storage.local.set({ ytState: {url: window.location.href, when: Date.now()} });
-}
-
-function onCheckState(item) {
-	// No remembered YouTube page -- remember the current page and date
-	if (!item.ytState || !item.ytState.url) {
-		rememberState('No url');
-		return;
-	}
-
-	if (item.ytState.when + 30000 > Date.now() && item.ytState.when + 60000 < Date.now()) {
-		rememberState('Stale date');
-		return;
-	}
-
-	// we somehow ended up on a different YouTube page (autoplay?) Back to the remembered page.
-	if (item.ytState.url != window.location.href && item.ytState.when + 60000 > Date.now()) {
-		window.location.href = item.ytState.url;
-	}
-}
-
-function onError(error) {
-	alert("Error: " + error);
-}
-
 function yt_cleanup() {
-	let gettingState = browser.storage.local.get();
-	gettingState.then(onCheckState, onError);
-
-	//wall of suggested next videos
-	if (document.getElementsByClassName('ytp-videowall-still-info-content').length) {
-		window.location.href = window.location.href;
-	}
-
 	if (document.getElementById('secondary')) {
 		run_script("document.getElementById('secondary').parentElement.removeChild(document.getElementById('secondary'))");
 	}
@@ -61,5 +26,4 @@ function yt_cleanup() {
 
 if (document.location.href.indexOf('watch') > 0) {
 	yt_cleanup();
-	setInterval(yt_cleanup, 10000);
 }
